@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+    <head>
+    <!-- Tus otras etiquetas meta y estilos -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#020617">
+</head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Universal Digital - Portal & Security Lab</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bank: {
+                            navy: '#0a192f',
+                            blue: '#1e3a8a',
+                            gold: '#d97706',
+                            goldlight: '#fef3c7',
+                            accent: '#2563eb',
+                            dark: '#0f172a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .receipt-pattern {
+            background-color: #ffffff;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 12px 12px;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- Top Security Banner -->
+    <div class="bg-amber-600/20 border-b border-amber-500/30 text-amber-200 px-4 py-2 text-xs text-center flex items-center justify-center gap-2">
+        <i class="fa-solid fa-shield-halved text-amber-400 text-sm"></i>
+        <span><strong>MODO ENTRENAMIENTO SEC-LAB:</strong> Sistema preparado para pruebas de Ciberseguridad y Simulación SQL (XSS, SQLi, Hashing).</span>
+        <button onclick="toggleDevPanel()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-2 py-0.5 rounded text-[11px] ml-2 transition">
+            Abrir Security Lab <i class="fa-solid fa-terminal ml-1"></i>
+        </button>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="bg-bank-navy border-b border-slate-800 sticky top-0 z-30 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('dashboard')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-bank-navy font-black text-xl shadow-md">
+                        BU
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight text-white block leading-none">Banco Universal</span>
+                        <span class="text-[10px] text-amber-400 font-semibold tracking-widest uppercase block mt-0.5">Digital Online</span>
+                    </div>
+                </div>
+
+                <!-- Nav Buttons -->
+                <div id="navRight" class="flex items-center gap-3">
+                    <button onclick="toggleDevPanel()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-2 transition">
+                        <i class="fa-solid fa-database text-amber-400"></i>
+                        <span class="hidden sm:inline">Consola BD / SecLab</span>
+                    </button>
+                    <div id="userNavWidget" class="hidden flex items-center gap-3 pl-3 border-l border-slate-700">
+                        <div class="text-right hidden sm:block">
+                            <span id="navUserName" class="text-xs font-semibold text-slate-200 block">Usuario</span>
+                            <span id="navUserRole" class="text-[10px] text-emerald-400 block">Cliente Verificado</span>
+                        </div>
+                        <button onclick="logout()" class="p-2 text-slate-400 hover:text-red-400 transition" title="Cerrar Sesión">
+                            <i class="fa-solid fa-right-from-bracket text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- VIEW: LOGIN -->
+        <section id="loginView" class="max-w-md mx-auto my-6">
+            <div class="glassmorphism rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-bank-blue via-amber-500 to-bank-blue"></div>
+                
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-white">Banca en Línea</h2>
+                    <p class="text-slate-400 text-xs mt-1">Ingresa tus datos para acceder a tu cuenta protegida</p>
+                </div>
+
+                <!-- Quick Fill Demo Buttons -->
+                <div class="mb-6 bg-slate-800/60 p-3 rounded-xl border border-slate-700">
+                    <p class="text-[11px] font-semibold text-amber-400 mb-2 flex items-center gap-1">
+                        <i class="fa-solid fa-key"></i> Credenciales de Prueba Rápidas:
+                    </p>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <button type="button" onclick="quickLogin('admin', 'admin123')" class="bg-slate-700 hover:bg-slate-600 text-slate-200 py-1.5 px-2 rounded text-left truncate">
+                            <strong class="text-white block">Usuario Admin</strong>
+                            <span class="text-[10px] text-slate-400">admin / admin123</span>
+                        </button>
+                        <button type="button" onclick="quickLogin('cliente1', 'pass123')" class="bg-slate-700 hover:bg-slate-600 text-slate-200 py-1.5 px-2 rounded text-left truncate">
+                            <strong class="text-white block">Cliente Normal</strong>
+                            <span class="text-[10px] text-slate-400">cliente1 / pass123</span>
+                        </button>
+                    </div>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Cédula / Usuario / Email</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                                <i class="fa-solid fa-user text-sm"></i>
+                            </span>
+                            <input type="text" id="loginUser" required placeholder="Ej. V-12345678 o admin" 
+                                class="w-full pl-9 pr-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-500 transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Contraseña</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                                <i class="fa-solid fa-lock text-sm"></i>
+                            </span>
+                            <input type="password" id="loginPass" required placeholder="••••••••" 
+                                class="w-full pl-9 pr-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-500 transition">
+                        </div>
+                    </div>
+
+                    <!-- CyberSec Toggle inside Login -->
+                    <div class="flex items-center justify-between text-xs py-1">
+                        <label class="flex items-center gap-2 cursor-pointer text-amber-300/90 hover:text-amber-300">
+                            <input type="checkbox" id="sqliVulnerableToggle" class="rounded bg-slate-800 border-slate-700 text-amber-500 focus:ring-0">
+                            <span title="Si está activo, permite probar payload tipo: ' OR '1'='1">Modo SQL Vulnerable (Practicar SQLi)</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold py-2.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-shield text-sm"></i> Iniciar Sesión Segura
+                    </button>
+                </form>
+
+                <div class="mt-4 text-center border-t border-slate-800 pt-4">
+                    <p class="text-xs text-slate-400">¿No tienes cuenta de prueba? 
+                        <button onclick="toggleRegisterModal(true)" class="text-amber-400 hover:underline font-semibold">Registrar Usuario Simulado</button>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: DASHBOARD (MAIN BANK PANEL) -->
+        <section id="dashboardView" class="hidden space-y-6">
+            <!-- Top Banner User Welcome -->
+            <div class="bg-gradient-to-r from-bank-navy via-slate-800 to-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30 uppercase tracking-wide">Sesión Activa</span>
+                        <span id="dashAccountType" class="text-slate-400 text-xs">Cuenta Corriente Digital</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-white mt-1">Hola, <span id="dashUserName" class="text-amber-400">Usuario</span></h1>
+                    <p class="text-slate-400 text-xs mt-0.5 flex items-center gap-2">
+                        <span>Cédula/RIF: <strong id="dashUserDoc" class="text-slate-200">V-00000000</strong></span> | 
+                        <span>N° Cuenta: <strong id="dashAccNumber" class="text-slate-200">0102-0000-0000-0000</strong></span>
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="navigateTo('transfer')" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition shadow-md flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Transferir / Pagar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1: Balance -->
+                <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700/80 shadow-md relative overflow-hidden">
+                    <div class="flex items-center justify-between text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">
+                        <span>Saldo Disponible</span>
+                        <i class="fa-solid fa-wallet text-amber-400 text-lg"></i>
+                    </div>
+                    <div class="text-3xl font-extrabold text-white tracking-tight" id="dashBalance">
+                        Bs 0.00
+                    </div>
+                    <p class="text-[11px] text-emerald-400 mt-2 flex items-center gap-1">
+                        <i class="fa-solid fa-circle-check"></i> Fondos disponibles para operaciones
+                    </p>
+                </div>
+
+                <!-- Card 2: Transactions Count -->
+                <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700/80 shadow-md">
+                    <div class="flex items-center justify-between text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">
+                        <span>Movimientos Registrados</span>
+                        <i class="fa-solid fa-arrow-right-arrow-left text-blue-400 text-lg"></i>
+                    </div>
+                    <div class="text-3xl font-extrabold text-white tracking-tight" id="dashTxCount">
+                        0
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-2">
+                        Historial sincronizado con BD local
+                    </p>
+                </div>
+
+                <!-- Card 3: Security Info -->
+                <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700/80 shadow-md">
+                    <div class="flex items-center justify-between text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">
+                        <span>Estado de Seguridad</span>
+                        <i class="fa-solid fa-shield-virus text-amber-500 text-lg"></i>
+                    </div>
+                    <div class="text-sm font-bold text-slate-200 mt-1" id="dashSecStatus">
+                        Protección Sanitize XSS Activa
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-2">
+                        Consultas parametrizadas en local Storage
+                    </p>
+                </div>
+            </div>
+
+            <!-- Recent Transactions Table -->
+            <div class="bg-slate-800/80 rounded-2xl border border-slate-700/80 shadow-md overflow-hidden">
+                <div class="p-5 border-b border-slate-700/80 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-amber-400"></i> Últimos Movimientos
+                        </h3>
+                        <p class="text-xs text-slate-400">Registro detallado de transacciones con número de referencia</p>
+                    </div>
+                    <button onclick="loadUserTransactions()" class="text-xs text-amber-400 hover:underline flex items-center gap-1">
+                        <i class="fa-solid fa-arrows-rotate"></i> Actualizar
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-900/60 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-700/60">
+                            <tr>
+                                <th class="p-3.5">Referencia</th>
+                                <th class="p-3.5">Fecha y Hora</th>
+                                <th class="p-3.5">Tipo / Beneficiario</th>
+                                <th class="p-3.5">Concepto</th>
+                                <th class="p-3.5 text-right">Monto</th>
+                                <th class="p-3.5 text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="txTableBody" class="divide-y divide-slate-700/50 text-slate-300">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: TRANSFER / PAYMENTS -->
+        <section id="transferView" class="hidden max-w-2xl mx-auto">
+            <div class="bg-slate-800/90 rounded-2xl p-6 sm:p-8 border border-slate-700 shadow-2xl relative">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-money-bill-transfer text-amber-400"></i> Registrar Pago o Transferencia
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Ingresa los datos del destinatario para ejecutar la transacción</p>
+                    </div>
+                    <button onclick="navigateTo('dashboard')" class="text-xs text-slate-400 hover:text-white bg-slate-700/50 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Volver
+                    </button>
+                </div>
+
+                <form id="transferForm" onsubmit="handleTransferSubmit(event)" class="space-y-4">
+                    <!-- Bank selection -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Banco Destino</label>
+                            <select id="payBank" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white text-xs focus:border-amber-500 focus:outline-none">
+                                <option value="0102 - Banco de Venezuela">0102 - Banco de Venezuela </option>
+                                <option value="0104- Banco Venezolano de Credito">0104 - Banco Venezolano de Credito</option>
+                                <option value="0105 - Banco Mercantil ">0105 - Banco Mercantil </option>
+                                <option value="0108 - Banco BBVA Provincial ">0108 - Banco Provincial </option>
+                                <option value="0110 - Banco Universal Digital ">0110 - Banco Universal Digital</option>
+                                <option value="0114- Bancaribe">0114 - Bancaribe</option>
+                                <option value="0134 - Banesco Sim">0134 - Banesco </option>
+                                <option value="0163 - Banco del Tesoro">0163 - Banco del Tesoro</option>
+                                <option value="0172 - Bancamiga">0172 - Bancamiga</option>
+                                <option value="0174 - Banplus">0174 - Banplus</option>
+                                <option value="0175 - Banco Digital de los Trabajadores">0175 - Banco Digital de los Trabajadores </option>
+                                <option value="0191 - Banco Nacional De Credito">0191 - Banco Nacional de Credito </option>
+
+                                
+                               
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Documento Identidad / RIF Beneficiario</label>
+                            <input type="text" id="payDoc" placeholder="Ej. V-18273645 o J-30982716" required
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white text-xs focus:border-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Account / Phone & Beneficiary Name -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                           
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Teléfono (Pago Móvil)</label>
+                            <input type="text" id="payAccount" placeholder="04121234567" required
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white text-xs focus:border-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Amount and Concept -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="sm:col-span-1">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Monto (Bs Bolivares)</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 font-bold text-xs"></span>
+                                <input type="number" step="0.01" min="0.01" id="payAmount" placeholder="0.00" required
+                                    class="w-full pl-7 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-bold text-sm focus:border-amber-500 focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1 flex justify-between">
+                                <span>Concepto / Motivo</span>
+                                <span class="text-[10px] text-amber-400" title="Prueba escribir código HTML/JS aquí para testear XSS"></span>
+                            </label>
+                            <input type="text" id="payConcept" placeholder="Ej. Pago de servicios / Honorarios" required
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white text-xs focus:border-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Security note -->
+                    <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[11px] text-amber-200/90">
+                        <i class="fa-solid fa-lock text-amber-400 mr-1"></i>
+                        Esta transacción es procesada inmediatamente en la Base del sistema. Generará un comprobante único de transferencia.
+                    </div>
+
+                    <div class="flex items-center gap-3 pt-2">
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold py-3 rounded-xl transition shadow-lg text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-check-circle"></i> Confirmar y Generar Pago
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RECEIPT MODAL (Comprobante de Operación Exitosa) -->
+   <!-- MODAL DE COMPROBANTE DE PAGO (OPTIMIZADO PARA MÓVILES) -->
+<div id="receiptModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    
+    <!-- Contenedor principal con altura máxima y scroll interno para pantallas muy pequeñas -->
+    <div class="bg-[#121418] text-slate-100 rounded-3xl max-w-md w-full p-5 sm:p-7 shadow-2xl relative my-auto border border-slate-800/80 max-h-[95vh] overflow-y-auto">
+        
+        <!-- Botón Volver / Flecha superior izquierda -->
+        <button onclick="closeReceipt()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-white mb-3 sm:mb-4 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+
+        <h2 class="text-center text-slate-400 text-xs sm:text-sm font-medium mb-3 sm:mb-4">Recibo</h2>
+
+        <!-- Círculo e Ícono de Éxito -->
+        <div class="text-center mb-5 sm:mb-6">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-b from-sky-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg shadow-sky-500/20">
+                <svg class="w-7 h-7 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold text-slate-300 px-2">RETIRO POR TRANSFERENCIA INMEDIATA</p>
+            <h3 id="recAmount" class="text-2xl sm:text-3xl font-black text-white mt-1">Bs. 0,00</h3>
+        </div>
+
+        <!-- Cuerpo de Detalles del Recibo (Texto compacto en móviles) -->
+        <div class="space-y-3 text-xs sm:text-sm bg-slate-900/50 p-3.5 sm:p-4 rounded-2xl border border-slate-800/60 mb-5 sm:mb-6">
+            
+            <!-- Fecha y Hora -->
+            <div class="flex justify-between items-center border-b border-slate-800/60 pb-2.5">
+                <span class="text-slate-400">Fecha y Hora</span>
+                <span id="recDate" class="font-medium text-slate-200 text-right">--/--/----</span>
+            </div>
+            
+            <!-- Referencia -->
+            <div class="flex justify-between items-center border-b border-slate-800/60 pb-2.5">
+                <span class="text-slate-400">Referencia</span>
+                <div class="flex items-center space-x-2">
+                    <span id="recRef" class="font-mono font-bold text-slate-200">00000000</span>
+                    <button onclick="navigator.clipboard.writeText(document.getElementById('recRef').innerText)" class="text-slate-400 hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Banco Destino -->
+            <div class="flex justify-between items-center border-b border-slate-800/60 pb-2.5">
+                <span class="text-slate-400">Banco Destino</span>
+                <span id="recBank" class="font-bold text-slate-200 uppercase text-right truncate max-w-[160px] sm:max-w-[200px]">BANCO UNIVERSAL DIGITAL</span>
+            </div>
+
+            <!-- Número / Teléfono -->
+            <div class="flex justify-between items-center border-b border-slate-800/60 pb-2.5">
+                <span class="text-slate-400">Telefono destino</span>
+                <span id="recAccount" class="font-medium text-slate-200">(0414) 000-00-00</span>
+            </div>
+
+            <!-- Cédula Destino -->
+            <div class="flex justify-between items-center border-b border-slate-800/60 pb-2.5">
+                <span class="text-slate-400">Cédula destino</span>
+                <span id="recDoc" class="font-medium text-slate-200">V-00000000</span>
+            </div>
+
+            <!-- Banco Origen -->
+            <div class="flex justify-between items-center border-b border-slate-800/60 pb-2.5">
+                <span class="text-slate-400">Banco Origen</span>
+                <span class="font-medium text-slate-200 text-right">BANCO UNIVERSAL</span>
+            </div>
+
+
+        <!-- Pie de marca -->
+        <div class="text-center mb-5">
+            <span class="text-[11px] text-slate-500 block mb-0.5">Transacción realizada desde</span>
+            <span class="font-black text-base sm:text-lg tracking-wider bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent">BANCO UNIVERSAL</span>
+        </div>
+
+        <!-- Botones inferiores de Compartir y Descargar -->
+        <div class="grid grid-cols-2 gap-2.5 mb-3.5">
+            <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 py-2.5 px-3 rounded-2xl flex items-center justify-center space-x-1.5 text-xs sm:text-sm font-medium transition-colors">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                </svg>
+                <span>Compartir</span>
+            </button>
+            <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 py-2.5 px-3 rounded-2xl flex items-center justify-center space-x-1.5 text-xs sm:text-sm font-medium transition-colors">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                <span>Descargar</span>
+            </button>
+        </div>
+
+        <!-- Botón Principal "Listo" -->
+        <button onclick="closeReceipt()" class="w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold py-3 px-4 rounded-2xl transition-all shadow-lg shadow-sky-500/20 text-center text-sm sm:text-base">
+            Listo
+        </button>
+
+    </div>
+</div>
+    </div>
+
+    <!-- REGISTER MODAL -->
+    <div id="registerModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 text-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus text-amber-400"></i> Registrar Usuario en BD Local
+                </h3>
+                <button onclick="toggleRegisterModal(false)" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleRegisterSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-slate-300 mb-1">Nombre Completo</label>
+                    <input type="text" id="regName" required placeholder="Ej. Carlos Mendoza" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Usuario / Nickname</label>
+                    <input type="text" id="regUser" required placeholder="carlosm" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Cédula / Documento</label>
+                    <input type="text" id="regDoc" required placeholder="V-25123456" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Contraseña</label>
+                    <input type="password" id="regPass" required placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Saldo Inicial Simulado (Bs)</label>
+                    <input type="number" id="regBalance" value="1500" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white">
+                </div>
+
+                <div class="pt-3">
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl transition text-xs">
+                        Guardar Registro en Tabla Users
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SECURITY LAB / DEV PANEL (SIDE DRAWER) -->
+    <div id="devPanel" class="fixed inset-y-0 right-0 w-full md:w-1/2 lg:w-5/12 bg-slate-950/95 border-l border-slate-800 shadow-2xl z-40 transform translate-x-full transition-transform duration-300 flex flex-col">
+        <!-- Drawer Header -->
+        <div class="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-flask text-amber-400 text-lg"></i>
+                <h3 class="font-bold text-white text-sm">Security & Database Testing Lab</h3>
+            </div>
+            <button onclick="toggleDevPanel()" class="text-slate-400 hover:text-white p-1">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Drawer Content Body -->
+        <div class="p-4 overflow-y-auto flex-1 space-y-6 text-xs">
+            
+            <!-- Dynamic SQL Query Console -->
+            <div class="bg-slate-900 rounded-xl p-3 border border-slate-800 font-mono">
+                <div class="flex items-center justify-between text-slate-400 mb-2 font-sans font-bold">
+                    <span class="text-amber-400 flex items-center gap-1"><i class="fa-solid fa-terminal"></i> SQL Query Visualizer (Última Operación):</span>
+                </div>
+                <div id="sqlLog" class="bg-black/80 text-emerald-400 p-3 rounded border border-emerald-500/30 overflow-x-auto text-[11px] leading-relaxed">
+                    -- Esperando operaciones en la plataforma...
+                </div>
+            </div>
+
+            <!-- Vulnerabilities & Security Explanations -->
+            <div class="bg-slate-900/80 rounded-xl p-4 border border-slate-800 space-y-3">
+                <h4 class="font-bold text-amber-400 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-bug"></i> Módulos de Prácticas de Ciberseguridad
+                </h4>
+
+                <div class="space-y-2">
+                    <!-- SQLi Info -->
+                    <details class="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700/60">
+                        <summary class="font-semibold text-slate-200 cursor-pointer flex justify-between items-center">
+                            1. SQL Injection (SQLi)
+                            <span class="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded">Ataque Crítico</span>
+                        </summary>
+                        <p class="text-[11px] text-slate-300 mt-2 leading-relaxed">
+                            <strong>Prueba:</strong> Activa el switch "Modo SQL Vulnerable" en el Login e ingresa como usuario: <br>
+                            <code class="bg-slate-900 text-amber-300 px-1 rounded">' OR '1'='1</code> o <code class="bg-slate-900 text-amber-300 px-1 rounded">admin' --</code><br>
+                            <strong>Explicación:</strong> Ocurre cuando los datos del usuario se concatenan directamente a la consulta SQL sin sanitizar, alterando la lógica booleana del servidor.
+                        </p>
+                    </details>
+
+                    <!-- XSS Info -->
+                    <details class="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700/60">
+                        <summary class="font-semibold text-slate-200 cursor-pointer flex justify-between items-center">
+                            2. Cross-Site Scripting (XSS)
+                            <span class="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded">Inyección</span>
+                        </summary>
+                        <p class="text-[11px] text-slate-300 mt-2 leading-relaxed">
+                            <strong>Prueba:</strong> En la transferencia, en el campo "Concepto", intenta escribir: <br>
+                            <code class="bg-slate-900 text-amber-300 px-1 rounded">&lt;b style="color:red"&gt;Prueba XSS&lt;/b&gt;</code><br>
+                            <strong>Explicación:</strong> Observa cómo el sistema escapa los caracteres especial (`&lt;`, `&gt;`) usando sanitización para evitar ejecución de scripts maliciosos.
+                        </p>
+                    </details>
+
+                    <!-- Hashing vs Plaintext -->
+                    <details class="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700/60">
+                        <summary class="font-semibold text-slate-200 cursor-pointer flex justify-between items-center">
+                            3. Hash de Contraseñas vs Texto Plano
+                            <span class="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded">Criptografía</span>
+                        </summary>
+                        <p class="text-[11px] text-slate-300 mt-2 leading-relaxed">
+                            Inspecciona la tabla <code>USERS</code> abajo. Las contraseñas nunca deben guardarse en texto plano. En una base de datos real se usa Bcrypt/Argon2 con Salt.
+                        </p>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Database Inspector (LocalStorage Tables) -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-bold text-slate-200 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-database text-blue-400"></i> Inspector de Tablas (LocalStorage)
+                    </h4>
+                    <button onclick="resetDatabase()" class="bg-red-500/20 hover:bg-red-500/30 text-red-300 text-[10px] px-2 py-1 rounded border border-red-500/30">
+                        Resetear BD Inicial
+                    </button>
+                </div>
+
+                <!-- Users Table -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                    <div class="bg-slate-800/80 px-3 py-1.5 font-bold text-[11px] text-amber-400 border-b border-slate-700">
+                        Tabla: USERS
+                    </div>
+                    <div class="overflow-x-auto max-h-40">
+                        <table class="w-full text-[10px] text-left">
+                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="p-1.5">ID</th>
+                                    <th class="p-1.5">Username</th>
+                                    <th class="p-1.5">Password</th>
+                                    <th class="p-1.5">Doc</th>
+                                    <th class="p-1.5">Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dbUsersTable" class="divide-y divide-slate-800 font-mono text-slate-300">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                    <div class="bg-slate-800/80 px-3 py-1.5 font-bold text-[11px] text-emerald-400 border-b border-slate-700">
+                        Tabla: TRANSACTIONS
+                    </div>
+                    <div class="overflow-x-auto max-h-40">
+                        <table class="w-full text-[10px] text-left">
+                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="p-1.5">Ref</th>
+                                    <th class="p-1.5">User</th>
+                                    <th class="p-1.5">Monto</th>
+                                    <th class="p-1.5">Destino</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dbTxTable" class="divide-y divide-slate-800 font-mono text-slate-300">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-bank-navy border-t border-slate-800 py-4 text-center text-slate-500 text-xs">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>© 2026 Banco Universal Digital - Plataforma de Simulación Educativa de Ciberseguridad.</p>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-800 border-l-4 border-amber-500 text-white px-4 py-3 rounded-xl shadow-2xl hidden transition-all z-50 flex items-center gap-3">
+        <i id="toastIcon" class="fa-solid fa-circle-info text-amber-400"></i>
+        <span id="toastMsg" class="text-xs">Mensaje del sistema</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- INITIAL SEED DATA FOR SIMULATED DATABASE ---
+        const INITIAL_USERS = [
+            { id: 1, username: 'admin', pass: 'admin123', name: 'Administrador del Sistema', doc: 'V-00000001', account: '0102-9999-0000-1111', balance: 50000.00 },
+            { id: 2, username: 'cliente1', pass: 'pass123', name: 'Maria Rodríguez', doc: 'V-19827364', account: '0102-1234-5678-9012', balance: 2450.50 }
+        ];
+
+        const INITIAL_TRANSACTIONS = [
+            {
+                ref: '849201934',
+                username: 'cliente1',
+                bank: '0102 - Banco Universal Digital',
+                doc: 'J-12345678',
+                name: 'Inversiones Tech C.A.',
+                account: '0102-8888-7777-6666',
+                amount: 150.00,
+                concept: 'Servicio Hosting Mensual',
+                date: '2026-10-15 14:30:12'
+            }
+        ];
+
+        let currentUser = null;
+
+        // --- INIT APP ---
+        window.onload = function() {
+            initDatabase();
+            checkSession();
+            renderDevDBTables();
+        };
+
+        // --- DATABASE MANAGEMENT (LOCALSTORAGE) ---
+        function initDatabase() {
+            if (!localStorage.getItem('bud_users')) {
+                localStorage.setItem('bud_users', JSON.stringify(INITIAL_USERS));
+            }
+            if (!localStorage.getItem('bud_transactions')) {
+                localStorage.setItem('bud_transactions', JSON.stringify(INITIAL_TRANSACTIONS));
+            }
+        }
+
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('bud_users')) || [];
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('bud_users', JSON.stringify(users));
+            renderDevDBTables();
+        }
+
+        function getTransactions() {
+            return JSON.parse(localStorage.getItem('bud_transactions')) || [];
+        }
+
+        function saveTransactions(txs) {
+            localStorage.setItem('bud_transactions', JSON.stringify(txs));
+            renderDevDBTables();
+        }
+
+        function resetDatabase() {
+            localStorage.setItem('bud_users', JSON.stringify(INITIAL_USERS));
+            localStorage.setItem('bud_transactions', JSON.stringify(INITIAL_TRANSACTIONS));
+            showToast('Base de Datos restaurada a valores por defecto');
+            renderDevDBTables();
+            if (currentUser) {
+                // reload current user data
+                const users = getUsers();
+                currentUser = users.find(u => u.username === currentUser.username) || null;
+                if (!currentUser) logout();
+                else updateDashboardUI();
+            }
+        }
+
+        // --- AUTHENTICATION MODULE & CYBERSECURITY DEMO ---
+        function handleLogin(e) {
+            e.preventDefault();
+            const userInput = document.getElementById('loginUser').value.trim();
+            const passInput = document.getElementById('loginPass').value.trim();
+            const isSQLiVulnerable = document.getElementById('sqliVulnerableToggle').checked;
+
+            const users = getUsers();
+            let foundUser = null;
+
+            if (isSQLiVulnerable) {
+                // SIMULATED VULNERABLE SQL QUERY: SELECT * FROM users WHERE username = 'USER' AND pass = 'PASS'
+                const simulatedQuery = `SELECT * FROM users WHERE (username = '${userInput}' OR doc = '${userInput}') AND pass = '${passInput}';`;
+                logSQL(simulatedQuery, 'VULNERABLE (SQL Injection Activado)');
+
+                // Simulating SQLi logic: if input contains ' OR '1'='1 or admin' --
+                if (userInput.includes("' OR '1'='1") || userInput.includes("admin' --") || passInput.includes("' OR '1'='1")) {
+                    foundUser = users[0]; // Bypasses auth and picks first user (admin)
+                    showToast('🚨 Vulnerabilidad SQLi Explotada: Autenticación Bypassed!', 'warning');
+                } else {
+                    foundUser = users.find(u => (u.username === userInput || u.doc === userInput) && u.pass === passInput);
+                }
+            } else {
+                // SECURE PARAMETERIZED SIMULATION: SELECT * FROM users WHERE username = ? AND pass = ?
+                const simulatedQuery = `SELECT * FROM users WHERE username = ? AND pass = ?; -- [Params: "${userInput}", "******"]`;
+                logSQL(simulatedQuery, 'SECURE (Parametrizada/Escapada)');
+
+                foundUser = users.find(u => (u.username.toLowerCase() === userInput.toLowerCase() || u.doc === userInput) && u.pass === passInput);
+            }
+
+            if (foundUser) {
+                currentUser = foundUser;
+                sessionStorage.setItem('bud_session', JSON.stringify(currentUser));
+                showToast(`¡Bienvenido, ${currentUser.name}!`);
+                updateDashboardUI();
+                navigateTo('dashboard');
+            } else {
+                showToast('Credenciales inválidas. Verifica usuario y contraseña.', 'error');
+            }
+        }
+
+        function quickLogin(user, pass) {
+            document.getElementById('loginUser').value = user;
+            document.getElementById('loginPass').value = pass;
+            handleLogin(new Event('submit'));
+        }
+
+        function logout() {
+            currentUser = null;
+            sessionStorage.removeItem('bud_session');
+            document.getElementById('userNavWidget').classList.add('hidden');
+            navigateTo('login');
+            showToast('Sesión cerrada correctamente');
+        }
+
+        function checkSession() {
+            const session = sessionStorage.getItem('bud_session');
+            if (session) {
+                currentUser = JSON.parse(session);
+                // Sync latest balance from DB
+                const users = getUsers();
+                const fresh = users.find(u => u.id === currentUser.id);
+                if (fresh) currentUser = fresh;
+
+                updateDashboardUI();
+                navigateTo('dashboard');
+            } else {
+                navigateTo('login');
+            }
+        }
+
+        // --- DASHBOARD FUNCTIONS ---
+        function updateDashboardUI() {
+            if (!currentUser) return;
+
+            document.getElementById('navUserName').innerText = currentUser.name;
+            document.getElementById('userNavWidget').classList.remove('hidden');
+
+            document.getElementById('dashUserName').innerText = currentUser.name;
+            document.getElementById('dashUserDoc').innerText = currentUser.doc;
+            document.getElementById('dashAccNumber').innerText = currentUser.account;
+            document.getElementById('dashBalance').innerText = `Bs ${currentUser.balance.toFixed(2)}`;
+
+            loadUserTransactions();
+        }
+
+        function loadUserTransactions() {
+            const allTx = getTransactions();
+            const userTx = allTx.filter(t => t.username === currentUser.username);
+            
+            document.getElementById('dashTxCount').innerText = userTx.length;
+
+            const tbody = document.getElementById('txTableBody');
+            tbody.innerHTML = '';
+
+            if (userTx.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">No hay movimientos registrados para esta cuenta.</td></tr>`;
+                return;
+            }
+
+            userTx.reverse().forEach(tx => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition";
+                tr.innerHTML = `
+                    <td class="p-3.5 font-mono text-amber-400 font-bold">#${tx.ref}</td>
+                    <td class="p-3.5 text-slate-400">${tx.date}</td>
+                    <td class="p-3.5">
+                        <span class="font-bold block text-slate-200">${sanitizeHTML(tx.name)}</span>
+                        <span class="text-[10px] text-slate-400">${tx.bank}</span>
+                    </td>
+                    <td class="p-3.5 text-slate-300 max-w-[180px] truncate">${sanitizeHTML(tx.concept)}</td>
+                    <td class="p-3.5 text-right font-bold text-emerald-400">-$${tx.amount.toFixed(2)}</td>
+                    <td class="p-3.5 text-center">
+                        <button onclick='reopenReceipt(${JSON.stringify(tx)})' class="bg-slate-700 hover:bg-slate-600 text-slate-200 p-1.5 rounded text-[11px]" title="Ver Comprobante">
+                            <i class="fa-solid fa-receipt"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- PAYMENT & TRANSFER PROCESSOR ---
+        function handleTransferSubmit(e) {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const bank = document.getElementById('payBank').value;
+            const doc = document.getElementById('payDoc').value.trim();
+            
+            const account = document.getElementById('payAccount').value.trim();
+            const amount = parseFloat(document.getElementById('payAmount').value);
+            const rawConcept = document.getElementById('payConcept').value;
+
+            // XSS Check Demonstration
+            const sanitizedConcept = sanitizeHTML(rawConcept);
+            if (rawConcept !== sanitizedConcept) {
+                showToast('🛡️ Sistema SecLab: Etiquetas HTML/JS detectadas y sanitizadas en concepto.', 'info');
+            }
+
+            if (amount > currentUser.balance) {
+                showToast('Fondos insuficientes para completar la transacción.', 'error');
+                return;
+            }
+
+            // Generate unique 9-digit Reference Number
+            const refNumber = Math.floor(100000000 + Math.random() * 900000000).toString();
+            const now = new Date();
+            const formattedDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+
+            // Create Transaction Record
+            const newTx = {
+                ref: refNumber,
+                username: currentUser.username,
+                bank: bank,
+                doc: doc,
+                name: name,
+                account: account,
+                amount: amount,
+                concept: rawConcept, // original input stored
+                date: formattedDate
+            };
+
+            // Deduct Balance from Current User
+            const users = getUsers();
+            const userIndex = users.findIndex(u => u.username === currentUser.username);
+            if (userIndex !== -1) {
+                users[userIndex].balance -= amount;
+                saveUsers(users);
+                currentUser.balance = users[userIndex].balance;
+                sessionStorage.setItem('bud_session', JSON.stringify(currentUser));
+            }
+
+            // Save Transaction
+            const txs = getTransactions();
+            txs.push(newTx);
+            saveTransactions(txs);
+
+            // SQL Simulation Log
+            logSQL(
+                `BEGIN TRANSACTION;\n` +
+                `UPDATE accounts SET balance = balance - ${amount} WHERE username = '${currentUser.username}';\n` +
+                `INSERT INTO transactions (ref, user, amount, bank, recipient) VALUES ('${refNumber}', '${currentUser.username}', ${amount}, '${bank}', '${name}');\n` +
+                `COMMIT;`,
+                'ACID Transaction Executed'
+            );
+
+            // Reset form
+            document.getElementById('transferForm').reset();
+
+            // Show Receipt Modal
+            displayReceipt(newTx);
+            updateDashboardUI();
+        }
+
+        // --- RECEIPT MODAL GENERATOR ---
+      // --- FUNCIÓN ACTUALIZADA PARA MOSTRAR EL COMPROBANTE ---
+function displayReceipt(tx) {
+    // 1. Asignar los valores a los elementos del nuevo diseño
+    document.getElementById('recAmount').innerText = `Bs. ${tx.amount.toFixed(2)}`;
+    document.getElementById('recDate').innerText = tx.date;
+    document.getElementById('recRef').innerText = tx.ref;
+    document.getElementById('recBank').innerText = tx.bank ? tx.bank.toUpperCase() : 'BANCO UNIVERSAL DIGITAL';
+    document.getElementById('recAccount').innerText = tx.account || '---';
+    
+    // Si tienes el campo de cédula en tu formulario, colócalo aquí (o dejará el valor por defecto)
+    if(document.getElementById('recDoc')) { 
+        document.getElementById('recDoc').innerText = tx.doc || 'V-14614485';
+    }
+
+    // 2. Mostrar el modal removiendo la clase 'hidden'
+    const modal = document.getElementById('receiptModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+// --- FUNCIÓN PARA CERRAR EL COMPROBANTE ---
+function closeReceipt() {
+    const modal = document.getElementById('receiptModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+        // --- REGISTER NEW USER SIMULATION ---
+        function toggleRegisterModal(show) {
+            const modal = document.getElementById('registerModal');
+            if (show) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+
+        function handleRegisterSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const username = document.getElementById('regUser').value.trim();
+            const doc = document.getElementById('regDoc').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+            const balance = parseFloat(document.getElementById('regBalance').value) || 1000;
+
+            const users = getUsers();
+            if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                showToast('El nombre de usuario ya existe en la BD', 'error');
+                return;
+            }
+
+            const newUser = {
+                id: users.length + 1,
+                username: username,
+                pass: pass,
+                name: name,
+                doc: doc,
+                account: `0102-${Math.floor(1000+Math.random()*9000)}-${Math.floor(1000+Math.random()*9000)}-${Math.floor(1000+Math.random()*9000)}`,
+                balance: balance
+            };
+
+            users.push(newUser);
+            saveUsers(users);
+
+            logSQL(`INSERT INTO users (username, password, name, doc, balance) VALUES ('${username}', '${pass}', '${name}', '${doc}', ${balance});`, 'INSERT Operations');
+
+            showToast('Usuario registrado exitosamente en la BD Local');
+            toggleRegisterModal(false);
+
+            // Auto fill login inputs
+            document.getElementById('loginUser').value = username;
+            document.getElementById('loginPass').value = pass;
+        }
+
+        // --- SECURITY & DEV CONSOLE HELPERS ---
+        function toggleDevPanel() {
+            const panel = document.getElementById('devPanel');
+            panel.classList.toggle('translate-x-full');
+        }
+
+        function logSQL(queryStr, tag = 'Query') {
+            const sqlLog = document.getElementById('sqlLog');
+            const time = new Date().toLocaleTimeString();
+            sqlLog.innerHTML = `<span class="text-slate-500">[${time}] -- Tag: ${tag}</span>\n<span class="text-amber-300">${escapeHTML(queryStr)}</span>\n\n` + sqlLog.innerHTML;
+        }
+
+        function renderDevDBTables() {
+            const users = getUsers();
+            const txs = getTransactions();
+
+            // Render Users Table
+            const usersBody = document.getElementById('dbUsersTable');
+            usersBody.innerHTML = users.map(u => `
+                <tr>
+                    <td class="p-1.5">${u.id}</td>
+                    <td class="p-1.5 text-amber-300 font-bold">${u.username}</td>
+                    <td class="p-1.5 text-slate-400">${u.pass}</td>
+                    <td class="p-1.5">${u.doc}</td>
+                    <td class="p-1.5 text-emerald-400">$${u.balance.toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            // Render Tx Table
+            const txBody = document.getElementById('dbTxTable');
+            txBody.innerHTML = txs.map(t => `
+                <tr>
+                    <td class="p-1.5 text-amber-400">#${t.ref}</td>
+                    <td class="p-1.5">${t.username}</td>
+                    <td class="p-1.5 text-emerald-400">$${t.amount}</td>
+                    <td class="p-1.5 truncate max-w-[80px]">${sanitizeHTML(t.name)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Utility: XSS Sanitization
+        function sanitizeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // --- NAVIGATION ROUTER ---
+        function navigateTo(viewName) {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('transferView').classList.add('hidden');
+
+            if (viewName === 'login') {
+                document.getElementById('loginView').classList.remove('hidden');
+            } else if (viewName === 'dashboard') {
+                if (!currentUser) { navigateTo('login'); return; }
+                document.getElementById('dashboardView').classList.remove('hidden');
+            } else if (viewName === 'transfer') {
+                if (!currentUser) { navigateTo('login'); return; }
+                document.getElementById('transferView').classList.remove('hidden');
+            }
+        }
+
+        // UI Toast Notifications
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = msg;
+            if (type === 'error') {
+                toast.className = "fixed bottom-5 right-5 bg-red-900 border-l-4 border-red-500 text-white px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-3";
+                toastIcon.className = "fa-solid fa-triangle-exclamation text-red-400";
+            } else if (type === 'warning') {
+                toast.className = "fixed bottom-5 right-5 bg-amber-900 border-l-4 border-amber-500 text-white px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-3";
+                toastIcon.className = "fa-solid fa-bug text-amber-400";
+            } else {
+                toast.className = "fixed bottom-5 right-5 bg-slate-800 border-l-4 border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-3";
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400";
+            }
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 4000);
+        }
+    </script>
+
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log('Service Worker registrado con éxito'))
+      .catch((err) => console.log('Error al registrar el Service Worker', err));
+  }
+</script>
+
+</body>
+</html>
