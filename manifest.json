@@ -1,7 +1,7 @@
 {
   "name": "Banco Universal Digital",
   "short_name": "Banco Digital",
-  "start_url": "/",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#020617",
   "theme_color": "#020617",
